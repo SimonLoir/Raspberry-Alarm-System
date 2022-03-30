@@ -7,11 +7,13 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "prettier-format": "prettier --config .prettierrc './**/*.ts' --write"
+        "prod": "NODE_ENV=production pm2 start server.js",
+        "logs": "pm2 logs"
     },
     "dependencies": {
         "next": "12.1.2",
         "node-fetch": "^3.2.3",
+        "pm2": "^5.2.0",
         "react": "18.0.0",
         "react-dom": "18.0.0",
         "sqlite-async": "^1.1.3",
