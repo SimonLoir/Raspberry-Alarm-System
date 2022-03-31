@@ -32,7 +32,12 @@ app.prepare().then(() => {
         fetch(address + '/api/hello');
         try {
             const python = spawn('python', [process.cwd() + '/core/core.py']);
-            python.stdout.on('data', (data) => console.log(data.toString()));
+            python.stdout.on('data', (data) => {
+                try {
+                    const d = JSON.stringify(data.toString().trim());
+                    fetch(address + '/api/sensor/' + d.code);
+                } catch (error) {}
+            });
             python.on('spawn', () => {
                 console.log('Python script spawned');
             });
