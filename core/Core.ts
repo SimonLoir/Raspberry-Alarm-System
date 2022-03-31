@@ -1,44 +1,40 @@
-import * as sqlite from 'sqlite-async';
-const database = sqlite.open(process.cwd() + '/db.sqlite');
+import * as fs from 'fs';
 
-enum State {
-    Armed = 'Armed',
-    Password = 'Password',
-}
-export default class Core {
-    static async setArmed(armed: boolean) {
-        const db = await database;
-        const value = armed ? '1' : '0';
-        await db.run(
-            `UPDATE state SET value = ${value} WHERE name = "${State.Armed}"`
-        );
-    }
+const app_path = process.env.APP_PATH || process.cwd();
+const config_file = app_path + '/db.json';
+const log_directory = app_path + '/logs/';
 
-    static async isArmed() {
-        const value = await (
-            await database
-        ).get(`SELECT * FROM state WHERE name = "${State.Armed}"`);
-        return value.value == '1';
-    }
+const getLogFileName = (date: Date) =>
+    `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
+const log = (message: string) =>
+    fs.appendFileSync(
+        log_directory + getLogFileName(new Date()),
+        new Date().toLocaleString() + ' ' + message + '\n'
+    );
 
-    static async initDatabase() {
-        console.log('init database');
-        const db = await database;
-        await db.run(`CREATE TABLE IF NOT EXISTS logs (
-            event_id INTEGER NOT NULL,
-            timestamp INTEGER NOT NULL 
-        )`);
+if (!fs.existsSync(config_file))
+    fs.writeFileSync(
+        config_file,
+        JSON.stringify({
+            armed: false,
+            password: '1234',
+            rules: {},
+            sensors: {},
+        })
+    );
 
-        await db.run(`CREATE TABLE IF NOT EXISTS state (
-            name TEXT PRIMARY KEY,
-            value TEXT NOT NULL
-        )`);
+if (!fs.existsSync(log_directory)) fs.mkdirSync(log_directory);
 
-        await db.run(
-            `INSERT INTO state(name, value) SELECT "${State.Armed}", "0" WHERE NOT EXISTS (SELECT * FROM state where name = "${State.Armed}")`
-        );
-        await db.run(
-            `INSERT INTO state(name, value) SELECT "${State.Password}", "12345678" WHERE NOT EXISTS (SELECT * FROM state where name = "${State.Password}")`
-        );
+class Core {
+    private __config: AlarmConfig;
+
+    public set config(config: AlarmConfig) {
+        this.__config = config;
     }
 }
+
+export const alarm = new Core();
+
+alarm.config = JSON.parse(fs.readFileSync(config_file, 'utf-8'));
+
+log('System started');
