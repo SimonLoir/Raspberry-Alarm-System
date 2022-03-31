@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { Gpio } from 'onoff';
 
 const app_path = process.env.APP_PATH || process.cwd();
 const config_file = app_path + '/db.json';
@@ -11,6 +12,14 @@ const log = (message: string) =>
         log_directory + getLogFileName(new Date()),
         new Date().toLocaleString() + ' ' + message + '\n'
     );
+const beep = () => {
+    try {
+        const b = new Gpio(14, 'out');
+        b.writeSync(1);
+        b.writeSync(0);
+        b.unexport();
+    } catch (error) {}
+};
 
 if (!fs.existsSync(config_file))
     fs.writeFileSync(
@@ -36,6 +45,7 @@ class Core {
         log(`System ${armed ? 'armed' : 'disarmed'} successfully`);
         this.__config.armed = armed;
         this.__saveConfig();
+        beep();
     }
 
     public set config(config: AlarmConfig) {
