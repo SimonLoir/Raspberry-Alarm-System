@@ -18,7 +18,9 @@ const beep = () => {
         b.writeSync(1);
         b.writeSync(0);
         b.unexport();
-    } catch (error) {}
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 if (!fs.existsSync(config_file))
