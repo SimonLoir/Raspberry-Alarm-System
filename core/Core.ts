@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import { Gpio } from 'onoff';
 
 const app_path = process.env.APP_PATH || process.cwd();
 const config_file = app_path + '/db.json';
