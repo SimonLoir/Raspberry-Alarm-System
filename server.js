@@ -30,5 +30,17 @@ app.prepare().then(() => {
         const address = `http://${hostname}:${port}`;
         console.log(`> Ready on ${address}`);
         fetch(address + '/api/hello');
+        try {
+            const python = spawn('python', [process.cwd() + '/core/core.py']);
+            python.on('data', (data) => console.log(data.toString()));
+            python.on('spawn', () => {
+                console.log('Python script spawned');
+            });
+            python.on('error', (err) => {
+                console.log(err);
+            });
+        } catch (error) {
+            console.log(error);
+        }
     });
 });
