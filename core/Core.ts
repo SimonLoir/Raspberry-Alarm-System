@@ -16,8 +16,10 @@ const beep = () => {
     try {
         const b = new Gpio(14, 'out');
         b.writeSync(1);
-        b.writeSync(0);
-        b.unexport();
+        setTimeout(() => {
+            b.writeSync(0);
+            b.unexport();
+        }, 100);
     } catch (error) {
         console.log(error);
     }
