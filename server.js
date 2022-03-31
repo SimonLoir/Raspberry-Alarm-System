@@ -34,7 +34,7 @@ app.prepare().then(() => {
             const python = spawn('python', [process.cwd() + '/core/core.py']);
             python.stdout.on('data', (data) => {
                 try {
-                    const d = JSON.stringify(data.toString().trim());
+                    const d = JSON.parse(data.toString().trim());
                     console.log(d);
                     fetch(address + '/api/sensor/' + d.code);
                 } catch (error) {}
