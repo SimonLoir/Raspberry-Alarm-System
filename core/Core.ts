@@ -23,7 +23,7 @@ const beep = (duration = 100) => {
                 resolve();
             }, duration);
         } catch (error) {
-            console.log(error);
+            console.log(error.toString());
             resolve();
         }
     });
@@ -44,6 +44,7 @@ if (!fs.existsSync(log_directory)) fs.mkdirSync(log_directory);
 
 class Core {
     private __config: AlarmConfig;
+    private __interval: NodeJS.Timer;
 
     /**
      * Tells whether the system is armed or not.
@@ -86,25 +87,42 @@ class Core {
      */
     public handleSensor(sensor_id: string) {
         const sf = this.__config.sensors[sensor_id];
-        const save = () => log(`${sensor_id} sent ${sf} signal`);
+        const save_signal = () => log(`${sensor_id} sent ${sf} signal`);
         switch (sf) {
             case 'arm':
                 this.armed = true;
-                save();
+                save_signal();
                 break;
 
             case 'disarm':
                 this.armed = false;
-                save();
+                save_signal();
+                this.stopAlarm();
                 break;
 
             case 'trigger':
-                save();
+                save_signal();
+                if (!this.armed) break;
+                this.alarm();
                 break;
 
             default:
                 break;
         }
+    }
+
+    public alarm() {
+        if (this.__interval != undefined) return;
+        this.__interval = setInterval(async () => {
+            await beep();
+        }, 200);
+    }
+
+    public stopAlarm() {
+        console.log('stopped');
+        if (this.__interval == undefined) return;
+        clearInterval(this.__interval);
+        this.__interval = undefined;
     }
 }
 

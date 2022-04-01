@@ -12,7 +12,7 @@
         "logs": "pm2 logs"
     },
     "dependencies": {
-        "next": "12.1.2",
+        "next": "^12.1.5-canary.0",
         "node-fetch": "^3.2.3",
         "onoff": "^6.0.3",
         "pm2": "^5.2.0",
