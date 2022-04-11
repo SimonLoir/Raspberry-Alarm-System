@@ -12,6 +12,10 @@ const log = (message: string) =>
         new Date().toLocaleString() + ' ' + message + '\n'
     );
 
+export function getLogs() {
+    return fs.readdirSync(log_directory);
+}
+
 const beep = (duration = 100) => {
     return new Promise<void>((resolve, reject) => {
         try {

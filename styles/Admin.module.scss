@@ -1,0 +1,51 @@
+$padding: 45px;
+
+.header {
+    line-height: 2 * $padding;
+    height: 2 * $padding;
+    background-color: rgb(38, 38, 38);
+    color: white;
+    padding-left: $padding;
+    padding-right: $padding;
+    border-bottom: 1px solid rgb(129, 129, 129);
+    h1 {
+        padding: 0;
+        margin: 0;
+        font-size: 25px;
+    }
+
+    .links {
+        float: right;
+        a {
+            font-weight: 700;
+            display: inline-block;
+            & + a {
+                margin-left: 25px;
+            }
+        }
+    }
+
+    h1,
+    .links {
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+.content {
+    background-color: rgb(38, 38, 38);
+    position: absolute;
+    top: #{2 * $padding};
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: $padding;
+    color: #eee;
+    h2,
+    h3,
+    h4,
+    h5 {
+        margin: 0;
+        padding: 0;
+    }
+}

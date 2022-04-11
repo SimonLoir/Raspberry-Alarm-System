@@ -17,7 +17,8 @@
         "onoff": "^6.0.3",
         "pm2": "^5.2.0",
         "react": "18.0.0",
-        "react-dom": "18.0.0"
+        "react-dom": "18.0.0",
+        "sass": "^1.50.0"
     },
     "devDependencies": {
         "@types/node": "^17.0.23",
