@@ -4,12 +4,14 @@
     "private": true,
     "scripts": {
         "dev": "node server.js",
-        "dev2": "next dev",
+        "dev2": "pm2 start server.js",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
         "prod": "NODE_ENV=production pm2 start server.js",
-        "logs": "pm2 logs"
+        "logs": "pm2 logs",
+        "startup": "pm2 startup",
+        "restart": "pm2 restart server.js"
     },
     "dependencies": {
         "next": "^12.2.2",

@@ -7,7 +7,7 @@ const { spawn } = require('child_process');
 const next = require('next');
 
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = 'localhost';
+const hostname = 'home.simonloir.be';
 const port = 3000;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
@@ -31,7 +31,7 @@ app.prepare().then(() => {
         console.log(`> Ready on ${address}`);
         fetch(address + '/api/hello');
         try {
-            const python = spawn('python', [process.cwd() + '/core/core.py']);
+            const python = spawn('python3', [process.cwd() + '/core/core.py']);
             python.stdout.on('data', (data) => {
                 try {
                     const d = JSON.parse(data.toString().trim());
