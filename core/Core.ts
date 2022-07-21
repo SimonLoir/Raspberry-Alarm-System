@@ -6,11 +6,13 @@ const config_file = app_path + '/db.json';
 const log_directory = app_path + '/logs/';
 const getLogFileName = (date: Date) =>
     `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
-const log = (message: string) =>
+const log = (message: string) => {
     fs.appendFileSync(
         log_directory + getLogFileName(new Date()),
         new Date().toLocaleString() + ' ' + message + '\n'
     );
+    console.log(message);
+};
 
 export function getLogs() {
     return fs.readdirSync(log_directory);
@@ -123,7 +125,6 @@ class Core {
     }
 
     public stopAlarm() {
-        console.log('stopped');
         if (this.__interval == undefined) return;
         clearInterval(this.__interval);
         this.__interval = undefined;

@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
+import { GrLock, GrUnlock } from 'react-icons/gr';
+
+const setState = (state: string) => {
+    fetch('/api/alarm/state/' + state);
+};
 
 export default function Status() {
     const [enabled, setEnabled] = useState(false);
@@ -22,6 +27,23 @@ export default function Status() {
             <h1 className={styles.title}>
                 System {enabled ? 'Armed' : 'Disarmed'}
             </h1>
+            <div className={styles.wrapper}>
+                {!enabled ? (
+                    <button
+                        className={styles.button}
+                        onClick={() => setState('on')}
+                    >
+                        <GrLock />
+                    </button>
+                ) : (
+                    <button
+                        className={styles.button}
+                        onClick={() => setState('off')}
+                    >
+                        <GrUnlock />
+                    </button>
+                )}
+            </div>
         </>
     );
 }

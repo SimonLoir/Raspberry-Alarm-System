@@ -11,7 +11,8 @@
         "prod": "NODE_ENV=production pm2 start server.js",
         "logs": "pm2 logs",
         "startup": "pm2 startup",
-        "restart": "pm2 restart server.js"
+        "restart": "pm2 restart server.js",
+        "status": "pm2 status"
     },
     "dependencies": {
         "next": "^12.2.2",
@@ -20,6 +21,7 @@
         "pm2": "^5.2.0",
         "react": "18.0.0",
         "react-dom": "18.0.0",
+        "react-icons": "^4.4.0",
         "sass": "^1.50.0"
     },
     "devDependencies": {

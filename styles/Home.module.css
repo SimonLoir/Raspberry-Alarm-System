@@ -114,3 +114,13 @@
         flex-direction: column;
     }
 }
+
+.button {
+    background: transparent;
+    height: 70px;
+    width: 70px;
+    font-size: 30px;
+    border: 2px solid black;
+    border-radius: 50%;
+    margin: 25px;
+}
