@@ -21,7 +21,7 @@ export function getLogs() {
 const beep = (duration = 100) => {
     return new Promise<void>((resolve, reject) => {
         try {
-            const b = new Gpio(14, 'out');
+            const b = new Gpio(20, 'out');
             b.writeSync(1);
             setTimeout(() => {
                 b.writeSync(0);
@@ -51,6 +51,7 @@ if (!fs.existsSync(log_directory)) fs.mkdirSync(log_directory);
 class Core {
     private __config: AlarmConfig;
     private __interval: NodeJS.Timer;
+    private __s: Gpio = new Gpio(21, 'out');
 
     /**
      * Tells whether the system is armed or not.
@@ -122,12 +123,14 @@ class Core {
         this.__interval = setInterval(async () => {
             await beep();
         }, 200);
+        this.__s.writeSync(1);
     }
 
     public stopAlarm() {
         if (this.__interval == undefined) return;
         clearInterval(this.__interval);
         this.__interval = undefined;
+        this.__s.writeSync(0);
     }
 }
 
