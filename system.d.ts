@@ -4,4 +4,6 @@ declare interface AlarmConfig {
     sensors: {
         [id: string]: sensor_function | undefined;
     };
+    public_key: string;
+    private_key: string;
 }

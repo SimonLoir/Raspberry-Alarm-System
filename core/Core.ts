@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { Gpio } from 'onoff';
+import webpush from 'web-push';
 
 const app_path = process.env.APP_PATH || process.cwd();
 const config_file = app_path + '/db.json';
@@ -51,7 +52,13 @@ if (!fs.existsSync(log_directory)) fs.mkdirSync(log_directory);
 class Core {
     private __config: AlarmConfig;
     private __interval: NodeJS.Timer;
-    private __s: Gpio = new Gpio(21, 'out');
+    private __s: Gpio;
+
+    constructor() {
+        try {
+            this.__s = new Gpio(21, 'out');
+        } catch (error) {}
+    }
 
     /**
      * Tells whether the system is armed or not.
@@ -118,19 +125,47 @@ class Core {
         }
     }
 
+    /**
+     * Sets the alarm in the alarming state.
+     * @returns
+     */
     public alarm() {
         if (this.__interval != undefined) return;
         this.__interval = setInterval(async () => {
             await beep();
         }, 200);
-        this.__s.writeSync(1);
+        this.__s?.writeSync(1);
     }
 
+    /**
+     * Disables the alarming state.
+     * @returns
+     */
     public stopAlarm() {
         if (this.__interval == undefined) return;
         clearInterval(this.__interval);
         this.__interval = undefined;
-        this.__s.writeSync(0);
+        this.__s?.writeSync(0);
+    }
+
+    /**
+     * Generates a new public and private key for push notifications system.
+     */
+    public new_key_pair() {
+        const keys = webpush.generateVAPIDKeys();
+        this.__config.public_key = keys.publicKey;
+        this.__config.private_key = keys.privateKey;
+        this.__saveConfig();
+    }
+
+    public get public_key() {
+        if (this.__config.public_key == undefined) this.new_key_pair();
+        return this.__config.public_key;
+    }
+
+    public get private_key() {
+        if (this.__config.private_key == undefined) this.new_key_pair();
+        return this.__config.private_key;
     }
 }
 
