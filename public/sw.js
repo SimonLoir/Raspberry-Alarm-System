@@ -22,7 +22,6 @@ const networkFirst = (event) => {
                         event.request.url.indexOf('/api/') === -1
                     )
                         cache.put(event.request, networkResponse.clone());
-                    console.log(networkResponse);
                     return networkResponse;
                 });
             })

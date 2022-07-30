@@ -135,6 +135,9 @@ class Core {
             await beep();
         }, 200);
         this.__s?.writeSync(1);
+        this.send_notification(
+            'Alarm triggered ! - ' + new Date().toLocaleString()
+        );
     }
 
     /**
@@ -158,16 +161,61 @@ class Core {
         this.__saveConfig();
     }
 
+    /**
+     * Returns the public key used by the system.
+     */
     public get public_key() {
         if (this.__config.public_key == undefined) this.new_key_pair();
         return this.__config.public_key;
     }
 
+    /**
+     * Returns the private key used by the system.
+     */
     public get private_key() {
         if (this.__config.private_key == undefined) this.new_key_pair();
         return this.__config.private_key;
     }
+
+    /**
+     * Saves a new subscription in the config.
+     * @param subscription The subscription to save.
+     */
+    public save_subscription(subscription: PushSubscriptionJSON) {
+        console.log(subscription);
+        if (!this.__config.subscriptions) this.__config.subscriptions = {};
+        this.__config.subscriptions[subscription.endpoint] = subscription;
+        this.__saveConfig();
+    }
+
+    /**
+     * Gets all the subscriptions saved in the config.
+     */
+    public get subscriptions() {
+        return Object.keys(this.__config.subscriptions).map(
+            (s) => this.__config.subscriptions[s]
+        );
+    }
+
+    /**
+     * Sends a notification to all the subscribers.
+     * @param text The text of the notification.
+     */
+    public send_notification(text: string) {
+        this.subscriptions.forEach((s) => {
+            webpush.sendNotification(s as any, text, {
+                vapidDetails: {
+                    subject: 'mailto:contact@simonloir.be',
+                    publicKey: this.public_key,
+                    privateKey: this.private_key,
+                },
+            });
+        });
+    }
 }
+
+export const core = new Core();
+export default core;
 
 export const alarm = new Core();
 

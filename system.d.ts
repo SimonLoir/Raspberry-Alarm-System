@@ -6,4 +6,7 @@ declare interface AlarmConfig {
     };
     public_key: string;
     private_key: string;
+    subscriptions: {
+        [id: string]: PushSubscriptionJSON;
+    };
 }
