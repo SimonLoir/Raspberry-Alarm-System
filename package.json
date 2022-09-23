@@ -12,7 +12,9 @@
         "logs": "pm2 logs",
         "startup": "pm2 startup",
         "restart": "pm2 restart server.js",
-        "status": "pm2 status"
+        "status": "pm2 status",
+        "stop": "pm2 stop server.js",
+        "save": "pm2 save"
     },
     "dependencies": {
         "next": "^12.2.2",
