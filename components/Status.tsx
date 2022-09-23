@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
+import getHeaders from '../utils/getHeaders';
 
 const toggleArm = (enabled: boolean) => {
     const state = enabled ? 'off' : 'on';
-    fetch('/api/alarm/state/' + state);
+    fetch('/api/alarm/state/' + state, { headers: getHeaders() });
 };
 
 export default function Status() {
@@ -14,7 +15,9 @@ export default function Status() {
     useEffect(() => {
         const fn = () => {
             (async () => {
-                const json = await (await fetch('/api/alarm/state')).json();
+                const json = await (
+                    await fetch('/api/alarm/state', { headers: getHeaders() })
+                ).json();
                 setEnabled(json.armed);
                 console.log(json);
             })();

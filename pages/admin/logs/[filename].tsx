@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import getHeaders from '../../../utils/getHeaders';
 
 export default function LogFile() {
     const router = useRouter();
@@ -12,8 +13,10 @@ export default function LogFile() {
         (async () => {
             try {
                 const response: string = await (
-                    await fetch('/api/logs/' + router.query.filename)
-                ).text();
+                    await fetch('/api/logs/' + router.query.filename, {
+                        headers: getHeaders(),
+                    })
+                ).json();
                 console.log(response);
                 setData(response);
                 setLoading(false);

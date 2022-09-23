@@ -2,12 +2,14 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 import Status from '../components/Status';
 import styles from '../styles/Home.module.css';
+import getHeaders from '../utils/getHeaders';
 
 async function saveSubscription(subscription: PushSubscription) {
     const response = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            ...getHeaders(),
         },
         body: JSON.stringify(subscription),
     });
@@ -30,7 +32,8 @@ export default function Home() {
                                 applicationServerKey: (
                                     await (
                                         (await fetch(
-                                            '/api/subscriptions/public-key'
+                                            '/api/subscriptions/public-key',
+                                            { headers: getHeaders() }
                                         )) as any
                                     ).json()
                                 ).public_key,

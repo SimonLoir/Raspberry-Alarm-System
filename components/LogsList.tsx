@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import getHeaders from '../utils/getHeaders';
 
 export default function LogsList() {
     const [data, setData] = useState<string[]>([]);
@@ -10,7 +11,7 @@ export default function LogsList() {
         (async () => {
             try {
                 const response: string[] = await (
-                    await fetch('/api/logs')
+                    await fetch('/api/logs', { headers: getHeaders() })
                 ).json();
                 console.log(response);
                 setData(response.reverse());

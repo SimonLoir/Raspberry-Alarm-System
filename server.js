@@ -49,8 +49,8 @@ app.prepare().then(() => {
             console.log(error);
         }
 
-        setInterval(() => {
-            fetch(address + '/api/cron');
-        }, 1000 * 2);
+        //setInterval(() => {
+        //    fetch(address + '/api/cron');
+        //}, 1000 * 2);
     });
 });

@@ -25,7 +25,7 @@ export function getLogFile(name: string) {
 
     if (!fs.existsSync(p)) throw new Error('File not found');
 
-    return fs.readFileSync(p);
+    return fs.readFileSync(p, 'utf-8');
 }
 
 const beep = (duration = 100) => {
@@ -220,6 +220,14 @@ class Core {
                 },
             });
         });
+    }
+
+    /**
+     * Gets a list of sensors
+     * @returns an object with the sensor as key and the type as value.
+     */
+    public list_sensors() {
+        return { ...this.__config.sensors };
     }
 }
 
