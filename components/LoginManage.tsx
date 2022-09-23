@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { decodeJwt } from 'jose';
 
 export default function LoginManager({
     children,
@@ -10,7 +11,8 @@ export default function LoginManager({
     const router = useRouter();
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
+        if (token && decodeJwt(token).exp * 1000 > Date.now()) {
+            console.log(decodeJwt(token));
             setLoggedIn(true);
         } else {
             router.push('/login');

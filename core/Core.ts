@@ -229,6 +229,10 @@ class Core {
     public list_sensors() {
         return { ...this.__config.sensors };
     }
+
+    public get password() {
+        return this.__config.password;
+    }
 }
 
 export const core = new Core();

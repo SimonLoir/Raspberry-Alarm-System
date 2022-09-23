@@ -12,7 +12,9 @@ export default function LoginPage() {
             />
             <button
                 onClick={async () => {
-                    const response = await fetch('/api/auth/token');
+                    const response = await fetch(
+                        '/api/auth/token?password=' + password
+                    );
                     const { token } = await response.json();
                     if (token) {
                         localStorage.setItem('token', token);

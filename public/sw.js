@@ -12,7 +12,6 @@ self.addEventListener('push', (e) => {
 
 const currentCache = 'c1.0.0';
 const networkFirst = (event) => {
-    console.log(event);
     event.respondWith(
         fetch(event.request)
             .then((networkResponse) => {
