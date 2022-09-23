@@ -21,6 +21,7 @@ export default function Home() {
         if ('serviceWorker' in navigator) {
             (async () => {
                 const permission = await Notification.requestPermission();
+                console.log(permission);
                 if (permission != 'granted') return;
                 navigator.serviceWorker.register('/sw.js');
                 navigator.serviceWorker.ready.then(async (reg) => {
@@ -39,7 +40,7 @@ export default function Home() {
                                 ).public_key,
                             });
                         } catch (error) {
-                            console.log(error);
+                            console.error(error);
                             return;
                         }
                     }

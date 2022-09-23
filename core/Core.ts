@@ -230,8 +230,30 @@ class Core {
         return { ...this.__config.sensors };
     }
 
+    /**
+     * Returns the password of the system.
+     */
     public get password() {
         return this.__config.password;
+    }
+
+    /**
+     * Updates the type of the sensor
+     * @param sensorID The ID of the sensor
+     * @param sensorType The new type of the sensor
+     */
+    public updateSensor(sensorID: string, sensorType: sensor_function) {
+        this.__config.sensors[sensorID] = sensorType;
+        this.__saveConfig();
+    }
+
+    /**
+     * Returns the function of a sensor
+     * @param sensorID the ID of the sensor
+     * @returns The function of the sensor
+     */
+    public getSensor(sensorID: string) {
+        return this.__config.sensors[sensorID];
     }
 }
 
