@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '.env.local' });
 // server.js
 const fetch = (...args) =>
     import('node-fetch').then(({ default: fetch }) => fetch(...args));
@@ -29,14 +30,17 @@ app.prepare().then(() => {
         if (err) throw err;
         const address = `http://${hostname}:${port}`;
         console.log(`> Ready on ${address}`);
-        fetch(address + '/api/hello');
         try {
             const python = spawn('python3', [process.cwd() + '/core/core.py']);
             python.stdout.on('data', (data) => {
                 try {
                     const d = JSON.parse(data.toString().trim());
                     console.log(d);
-                    fetch(address + '/api/sensor/' + d.code);
+                    fetch(address + '/api/sensor/' + d.code, {
+                        headers: {
+                            Authorization: 'Bearer ' + process.env.API_KEY,
+                        },
+                    });
                 } catch (error) {}
             });
             python.on('spawn', () => {

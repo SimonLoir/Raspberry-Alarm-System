@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 import { Gpio } from 'onoff';
 import webpush from 'web-push';
 
@@ -17,6 +18,14 @@ const log = (message: string) => {
 
 export function getLogs() {
     return fs.readdirSync(log_directory);
+}
+
+export function getLogFile(name: string) {
+    const p = log_directory + path.basename(name);
+
+    if (!fs.existsSync(p)) throw new Error('File not found');
+
+    return fs.readFileSync(p, 'utf-8');
 }
 
 const beep = (duration = 100) => {
@@ -211,6 +220,40 @@ class Core {
                 },
             });
         });
+    }
+
+    /**
+     * Gets a list of sensors
+     * @returns an object with the sensor as key and the type as value.
+     */
+    public list_sensors() {
+        return { ...this.__config.sensors };
+    }
+
+    /**
+     * Returns the password of the system.
+     */
+    public get password() {
+        return this.__config.password;
+    }
+
+    /**
+     * Updates the type of the sensor
+     * @param sensorID The ID of the sensor
+     * @param sensorType The new type of the sensor
+     */
+    public updateSensor(sensorID: string, sensorType: sensor_function) {
+        this.__config.sensors[sensorID] = sensorType;
+        this.__saveConfig();
+    }
+
+    /**
+     * Returns the function of a sensor
+     * @param sensorID the ID of the sensor
+     * @returns The function of the sensor
+     */
+    public getSensor(sensorID: string) {
+        return this.__config.sensors[sensorID];
     }
 }
 

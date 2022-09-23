@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
-import { GrLock, GrUnlock } from 'react-icons/gr';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
+import getHeaders from '../utils/getHeaders';
 
-const setState = (state: string) => {
-    fetch('/api/alarm/state/' + state);
+const toggleArm = (enabled: boolean) => {
+    const state = enabled ? 'off' : 'on';
+    fetch('/api/alarm/state/' + state, { headers: getHeaders() });
 };
 
 export default function Status() {
@@ -12,7 +15,9 @@ export default function Status() {
     useEffect(() => {
         const fn = () => {
             (async () => {
-                const json = await (await fetch('/api/alarm/state')).json();
+                const json = await (
+                    await fetch('/api/alarm/state', { headers: getHeaders() })
+                ).json();
                 setEnabled(json.armed);
                 console.log(json);
             })();
@@ -23,27 +28,22 @@ export default function Status() {
     }, []);
 
     return (
-        <>
+        <div onClick={() => toggleArm(enabled)}>
             <h1 className={styles.title}>
                 System {enabled ? 'Armed' : 'Disarmed'}
             </h1>
-            <div className={styles.wrapper}>
-                {!enabled ? (
-                    <button
-                        className={styles.button}
-                        onClick={() => setState('on')}
-                    >
-                        <GrLock />
-                    </button>
+
+            <div className={styles.description}>
+                {enabled ? (
+                    <div className={styles.button}>
+                        <LockOpenIcon />
+                    </div>
                 ) : (
-                    <button
-                        className={styles.button}
-                        onClick={() => setState('off')}
-                    >
-                        <GrUnlock />
-                    </button>
+                    <div className={styles.button}>
+                        <LockIcon />
+                    </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }
