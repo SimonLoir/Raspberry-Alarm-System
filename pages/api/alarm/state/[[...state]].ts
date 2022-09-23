@@ -16,5 +16,7 @@ export default async function handler(
 
     alarm.armed = state == 'on';
 
+    if (state == 'off') alarm.stopAlarm();
+
     res.status(200).json({});
 }

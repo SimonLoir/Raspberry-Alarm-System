@@ -31,7 +31,7 @@ app.prepare().then(() => {
         console.log(`> Ready on ${address}`);
         fetch(address + '/api/hello');
         try {
-            const python = spawn('python', [process.cwd() + '/core/core.py']);
+            const python = spawn('python3', [process.cwd() + '/core/core.py']);
             python.stdout.on('data', (data) => {
                 try {
                     const d = JSON.parse(data.toString().trim());
