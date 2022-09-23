@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
+
+const toggleArm = (enabled: boolean) => {
+    const state = enabled ? 'off' : 'on';
+    fetch('/api/alarm/state/' + state);
+};
 
 export default function Status() {
     const [enabled, setEnabled] = useState(false);
@@ -18,10 +25,22 @@ export default function Status() {
     }, []);
 
     return (
-        <>
+        <div onClick={() => toggleArm(enabled)}>
             <h1 className={styles.title}>
                 System {enabled ? 'Armed' : 'Disarmed'}
             </h1>
-        </>
+
+            <div className={styles.description}>
+                {enabled ? (
+                    <div className={styles.button}>
+                        <LockOpenIcon />
+                    </div>
+                ) : (
+                    <div className={styles.button}>
+                        <LockIcon />
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

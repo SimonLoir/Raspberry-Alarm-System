@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 import { Gpio } from 'onoff';
 
 const app_path = process.env.APP_PATH || process.cwd();
@@ -14,6 +15,14 @@ const log = (message: string) =>
 
 export function getLogs() {
     return fs.readdirSync(log_directory);
+}
+
+export function getLogFile(name: string) {
+    const p = log_directory + path.basename(name);
+
+    if (!fs.existsSync(p)) throw new Error('File not found');
+
+    return fs.readFileSync(p);
 }
 
 const beep = (duration = 100) => {
