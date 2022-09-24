@@ -149,6 +149,9 @@ class Core {
             'Alarm triggered ! - ' + new Date().toLocaleString()
         );
         log('Alarm triggered !');
+        setTimeout(() => {
+            this.stopAlarm();
+        }, 1000 * 60 * 10);
     }
 
     /**
@@ -275,9 +278,6 @@ class Core {
         return { ...this.__config.sensors_description };
     }
 }
-
-export const core = new Core();
-export default core;
 
 export const alarm = new Core();
 
