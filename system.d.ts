@@ -10,4 +10,7 @@ declare interface AlarmConfig {
     subscriptions: {
         [id: string]: PushSubscriptionJSON;
     };
+    sensors_description: {
+        [id: string]: string;
+    };
 }

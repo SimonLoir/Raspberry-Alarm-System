@@ -53,6 +53,7 @@ if (!fs.existsSync(config_file))
             password: '1234',
             rules: {},
             sensors: {},
+            sensors_description: {},
         })
     );
 
@@ -242,7 +243,7 @@ class Core {
      * @param sensorID The ID of the sensor
      * @param sensorType The new type of the sensor
      */
-    public updateSensor(sensorID: string, sensorType: sensor_function) {
+    public update_sensor(sensorID: string, sensorType: sensor_function) {
         this.__config.sensors[sensorID] = sensorType;
         this.__saveConfig();
     }
@@ -252,8 +253,25 @@ class Core {
      * @param sensorID the ID of the sensor
      * @returns The function of the sensor
      */
-    public getSensor(sensorID: string) {
+    public get_sensor(sensorID: string) {
         return this.__config.sensors[sensorID];
+    }
+
+    /**
+     * Returns the description of a sensor.
+     * @param sensorID Te ID of the sensor
+     * @returns The description of the sensor
+     */
+    public get_sensor_description(sensorID: string) {
+        return this.__config.sensors_description[sensorID];
+    }
+
+    /**
+     * Lists all the descriptions of the sensors
+     * @returns An object with the sensor ID as key and the description as value
+     */
+    public list_sensors_description() {
+        return { ...this.__config.sensors_description };
     }
 }
 

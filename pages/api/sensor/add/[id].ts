@@ -8,6 +8,6 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const sensorID = req.query.id.toString();
-    alarm.updateSensor(sensorID, 'trigger');
-    res.status(200).json({ [sensorID]: alarm.getSensor(sensorID) });
+    alarm.update_sensor(sensorID, 'trigger');
+    res.status(200).json({ [sensorID]: alarm.get_sensor(sensorID) });
 }
