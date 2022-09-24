@@ -148,6 +148,7 @@ class Core {
         this.send_notification(
             'Alarm triggered ! - ' + new Date().toLocaleString()
         );
+        log('Alarm triggered !');
     }
 
     /**
