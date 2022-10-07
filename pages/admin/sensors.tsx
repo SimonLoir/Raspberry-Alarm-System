@@ -17,13 +17,22 @@ function Select({ type, onChange }) {
 
 export default function SensorsPage() {
     const [data, setData] = useState<any>({});
+    const [descriptions, setDescriptions] = useState<any>({});
     const [name, setName] = useState('');
     const loader = useCallback(async () => {
         const response = await fetch('/api/sensors', {
             headers: getHeaders(),
         });
+
         const data = await response.json();
         setData(data);
+
+        const response2 = await fetch('/api/sensors/descriptions', {
+            headers: getHeaders(),
+        });
+
+        const data2 = await response2.json();
+        setDescriptions(data2);
     }, []);
 
     useEffect(() => {
@@ -39,6 +48,7 @@ export default function SensorsPage() {
                     <tr>
                         <th>Sensor ID</th>
                         <th>Sensor type</th>
+                        <th>Sensor Description</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,6 +73,43 @@ export default function SensorsPage() {
                                             });
                                         }}
                                     />
+                                </td>
+                                <td
+                                    onClick={() => {
+                                        const description = prompt(
+                                            'Sensor description',
+                                            descriptions[sensorID]
+                                        );
+                                        if (
+                                            description &&
+                                            description !=
+                                                descriptions[sensorID]
+                                        ) {
+                                            fetch(
+                                                '/api/sensor/' +
+                                                    sensorID +
+                                                    '/description',
+                                                {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        ...getHeaders(),
+                                                        'Content-Type':
+                                                            'application/json',
+                                                    },
+                                                    body: JSON.stringify({
+                                                        description,
+                                                    }),
+                                                }
+                                            ).then(() => {
+                                                setDescriptions({
+                                                    ...descriptions,
+                                                    [sensorID]: description,
+                                                });
+                                            });
+                                        }
+                                    }}
+                                >
+                                    {descriptions[sensorID]}
                                 </td>
                             </tr>
                         );

@@ -277,6 +277,17 @@ class Core {
     public list_sensors_description() {
         return { ...this.__config.sensors_description };
     }
+
+    /**
+     * Updates the description of a sensor
+     * @param sensorID The ID of the sensor
+     *  @param description The new description of the sensor
+     * @returns The description of the sensor
+     */
+    public update_sensor_description(sensorID: string, description: string) {
+        this.__config.sensors_description[sensorID] = description;
+        this.__saveConfig();
+    }
 }
 
 export const alarm = new Core();
