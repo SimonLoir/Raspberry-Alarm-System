@@ -39,7 +39,7 @@ const beep = (duration = 100) => {
                 resolve();
             }, duration);
         } catch (error) {
-            console.log(error.toString());
+            console.log('beep missed');
             resolve();
         }
     });
@@ -60,8 +60,11 @@ if (!fs.existsSync(config_file))
 if (!fs.existsSync(log_directory)) fs.mkdirSync(log_directory);
 
 class Core {
+    private __cooldown_duration = 1000 * 30;
     private __config: AlarmConfig;
     private __interval: NodeJS.Timer;
+    private __alarm_armed_beep: NodeJS.Timer;
+    private __alarm_armed_beep_timeout: NodeJS.Timeout;
     private __s: Gpio;
 
     constructor() {
@@ -83,8 +86,27 @@ class Core {
      * @param armed whether the system should be armed or not.
      */
     public set armed(armed: boolean) {
+        if (this.__config.armed == armed) return;
         log(`System ${armed ? 'armed' : 'disarmed'} successfully`);
+        this.send_notification('System ' + (armed ? 'armed' : 'disarmed'));
         this.__config.armed = armed;
+        if (armed) {
+            this.__config.activation_time = new Date().getTime();
+            this.__alarm_armed_beep = setInterval(async () => {
+                await beep();
+            }, 1000);
+            this.__alarm_armed_beep_timeout = setTimeout(() => {
+                if (this.__alarm_armed_beep != undefined) {
+                    clearInterval(this.__alarm_armed_beep);
+                    this.__alarm_armed_beep = undefined;
+                }
+            }, this.__cooldown_duration);
+        } else {
+            if (this.__alarm_armed_beep) {
+                clearInterval(this.__alarm_armed_beep);
+                this.__alarm_armed_beep = undefined;
+            }
+        }
         this.__saveConfig();
         beep();
     }
@@ -125,8 +147,8 @@ class Core {
                 break;
 
             case 'trigger':
-                save_signal();
                 if (!this.armed) break;
+                save_signal();
                 this.alarm();
                 break;
 
@@ -140,6 +162,13 @@ class Core {
      * @returns
      */
     public alarm() {
+        if (
+            new Date().getTime() - this.__config.activation_time <
+            this.__cooldown_duration
+        )
+            return console.log(
+                'alarm prevented because cooldown is still active'
+            );
         if (this.__interval != undefined) return;
         this.__interval = setInterval(async () => {
             await beep();
@@ -216,14 +245,21 @@ class Core {
      * @param text The text of the notification.
      */
     public send_notification(text: string) {
+        console.log('Sending notification to subscribers : ' + text);
         this.subscriptions.forEach((s) => {
-            webpush.sendNotification(s as any, text, {
-                vapidDetails: {
-                    subject: 'mailto:contact@simonloir.be',
-                    publicKey: this.public_key,
-                    privateKey: this.private_key,
-                },
-            });
+            try {
+                webpush
+                    .sendNotification(s as any, text, {
+                        vapidDetails: {
+                            subject: 'mailto:contact@simonloir.be',
+                            publicKey: this.public_key,
+                            privateKey: this.private_key,
+                        },
+                    })
+                    .catch(() => console.log("Couldn't send notification"));
+            } catch (error) {
+                console.log(error.toString());
+            }
         });
     }
 

@@ -10,6 +10,7 @@ export default function LogFile() {
     const [error, setError] = useState<string>('');
 
     useEffect(() => {
+        if (!router.isReady) return;
         (async () => {
             try {
                 const response: string = await (

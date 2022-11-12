@@ -1,5 +1,6 @@
 declare type sensor_function = 'arm' | 'disarm' | 'trigger';
 declare interface AlarmConfig {
+    activation_time: number;
     password: string;
     armed: boolean;
     sensors: {
